@@ -13,12 +13,10 @@ import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 def index(request):
-    if not request.user.is_authenticated:
-        return redirect('login')
-    new_post_form = NewPostForm()
-
+    # get page no.
     page = request.GET.get('page', 1)
 
+    # get all posts
     all_posts = Posts.objects.all().order_by('-date_of_creation')
     
     #paginate
@@ -30,17 +28,25 @@ def index(request):
         posts = paginate.page(1)
     except EmptyPage:
         posts = paginate.page(paginate.num_pages)
-
-    #liked posts
-    user_get = User.objects.get(pk=request.user.id)
-    liked_posts = [post['like_post_id'] for post in user_get.liked_posts.all().values('like_post_id')]
     
-    print(liked_posts)
+    # if logged in 
+    if request.user.is_authenticated:
+        new_post_form = NewPostForm()
 
+        #liked posts
+        user_get = User.objects.get(pk=request.user.id)
+        liked_posts = [post['like_post_id'] for post in user_get.liked_posts.all().values('like_post_id')]
+        
+        print(liked_posts)
+
+        return render(request, "network/index.html", {
+            "form_post": new_post_form, 
+            "posts": posts,
+            "liked_posts": liked_posts
+        })
+    #if not logged in
     return render(request, "network/index.html", {
-        "form_post": new_post_form, 
-        "posts": posts,
-        "liked_posts": liked_posts
+        "posts": posts
     })
 
 
@@ -196,3 +202,7 @@ def like_post(request, postid):
         post.likes -= 1
         post.save()
     return JsonResponse({"user": request.user.username, "likes": post.likes}, status=200)
+
+@csrf_exempt
+def comment(request, postid):
+    pass 

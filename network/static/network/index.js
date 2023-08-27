@@ -1,13 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // document.querySelector('#id_text').addEventListener('keyup', textAreaAdjust);
+    // newpost form
     try {
     document.querySelector('#newpost-form').addEventListener('submit', newPost);     
     } catch (TypeError) {
     }
+    // empty the new_post textarea
     try {
     document.querySelector('#id_text').value = '';
     } catch (error) {
     }
+    //add listener to all edit buttons
     try {
         const editPostBtn = document.querySelectorAll('.edit-post')
         for (let i = 0; i < editPostBtn.length; i++) {
@@ -15,6 +17,8 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     } catch (TypeError) {
     }
+    //add listener to all comment buttons
+    
 })
 
 function editPost(event) {

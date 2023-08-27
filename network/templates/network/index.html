@@ -28,9 +28,9 @@
             {% endif %}
             <span class="post-content">{{post.text_content}}</span>
             {% if post.id in liked_posts %}
-            <span class="likes-number" data-postid="{{post.id}}"><i class="likes-btn press"></i><span class="likes-no">{{post.likes}}</span></span>
+            <span class="likes-number" data-postid="{{post.id}}">{% if user.is_authenticated %}<i class="likes-btn press"></i>{% else %}<i class="fa-regular fa-heart"></i>{% endif %}<span class="likes-no">{{post.likes}}</span><button class="add-comment">Comment</button></span>
             {% else %}
-            <span class="likes-number" data-postid="{{post.id}}"><i class="likes-btn"></i><span class="likes-no">{{post.likes}}</span></span>
+            <span class="likes-number" data-postid="{{post.id}}">{% if user.is_authenticated %}<i class="likes-btn"></i>{% else %}<i class="fa-regular fa-heart"></i>{% endif %}<span class="likes-no">{{post.likes}}</span><button class="add-comment">Comment</button></span>
             {% endif %}
         </div>
     {% endfor %}

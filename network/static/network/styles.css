@@ -198,3 +198,19 @@ body {
 .edit-btn {
   height: 33px;
 }
+
+.add-comment {
+  background: none;
+  outline: none;
+  border: none;
+  margin-left: 20px;
+  text-decoration: underline;
+}
+
+.add-comment:focus {
+  outline: none;
+}
+
+.fa-regular {
+  margin-right: 10px;
+}

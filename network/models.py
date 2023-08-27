@@ -42,3 +42,13 @@ class UserLikes(models.Model):
 
     def __str__(self):
         return f"{self.like_user} likes {self.like_post}"
+
+class Comments(models.Model):
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comment_user")
+    post = models.ForeignKey("Posts", on_delete=models.CASCADE, related_name="comments")
+    comment_text = models.CharField(max_length=1000, default='')
+    time_of_comment = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.user} commented {self.comment_text} on {self.post} at {self.time_of_comment}"
+    
