@@ -29,7 +29,6 @@ def index(request):
         posts = paginate.page(1)
     except EmptyPage:
         posts = paginate.page(paginate.num_pages)
-    print(paginate.page(2))
 
     return render(request, "network/index.html", {
         "form_post": new_post_form, 

@@ -30,3 +30,15 @@ class UserFollowData(models.Model):
 
     def __str__(self):
         return f"{self.follower_user} follows {self.following_user}"
+
+class UserLikes(models.Model):
+    like_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="liked_posts")
+    like_post = models.ForeignKey("Posts", on_delete=models.CASCADE, related_name="liked_users")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['like_user', 'like_post'], name="unique_likes")
+        ]
+
+    def __str__(self):
+        return f"{self.like_user} likes {self.like_post}"
