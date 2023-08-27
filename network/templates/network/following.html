@@ -1,0 +1,11 @@
+{% extends 'network/layout.html' %}
+
+{% block body %}
+    {% for post in posts %}
+        <div class="post">
+            <span class="user-details"><a href="{% url 'profile' name=post.user %}">{{post.user}}</a><span class="date_created">{{post.date_of_creation}}</span></span>
+            <span class="post-content">{{post.text_content}}</span>
+            <span class="likes-number">Likes: {{post.likes}}</span>
+        </div>
+    {% endfor %}
+{% endblock %}

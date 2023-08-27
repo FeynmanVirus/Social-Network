@@ -1,0 +1,36 @@
+{% extends 'network/layout.html' %}
+{% load static %}
+
+{% block link %}
+        <script src="{% static 'network/profile.js' %}"></script>
+{% endblock %}
+
+
+{% block body %}
+    <h2 id="profile-username">{{ user_get.username }}</h2>
+    <span id="followers"></span>
+    <span id="following"></span>
+
+    {% if user.is_authenticated %}
+        {% if not user_owner %}
+        <form id="follow-form">
+            <input type="submit" class="button-30" id="follow-btn" value="{{follow_status}}">
+        </form>
+        {% endif %}
+    {% endif %}
+
+    <div id="posts">
+    <h3>{{user_get.username}}'s Posts</h3>
+    {% for post in posts %}
+        <div class="post">
+            <span class="user-details">{{post.user}} <span class="date_created">{{post.date_of_creation}}</span></span>
+            <span class="post-content">{{post.text_content}}</span>
+            <span class="likes-number">Likes: {{post.likes}}</span>
+        </div>
+    {% endfor %}
+  </div>
+  <script>
+    let followers = "{{followers|safe}}"
+    let following = "{{following|safe}}"
+  </script>
+{% endblock %}

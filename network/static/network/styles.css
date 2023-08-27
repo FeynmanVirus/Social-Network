@@ -1,0 +1,200 @@
+body {
+    font-family: "JetBrains Mono", monospace;
+    padding: 6px 14px;
+}
+
+/* CSS */
+.button-30 {
+  align-items: center;
+  appearance: none;
+  background-color: #FCFCFD;
+  border-radius: 4px;
+  border-width: 0;
+  box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+  box-sizing: border-box;
+  color: #36395A;
+  cursor: pointer;
+  display: inline-flex;
+  font-family: "JetBrains Mono",monospace;
+  height: 48px;
+  justify-content: center;
+  line-height: 1;
+  list-style: none;
+  overflow: hidden;
+  padding-left: 16px;
+  padding-right: 16px;
+  position: relative;
+  text-align: left;
+  text-decoration: none;
+  transition: box-shadow .15s,transform .15s;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  white-space: nowrap;
+  will-change: box-shadow,transform;
+  font-size: 18px;
+}
+
+.button-30:focus {
+  box-shadow: #D6D6E7 0 0 0 1.5px inset, rgba(45, 35, 66, 0.4) 0 2px 4px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+}
+
+.button-30:hover {
+  box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+  transform: translateY(-2px);
+}
+
+.button-30:active {
+  box-shadow: #D6D6E7 0 3px 7px inset;
+  transform: translateY(2px);
+}
+
+.post {
+    display: block;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    will-change: box-shadow,transform;
+    margin-top: 15px;
+    padding: 6px 14px;
+}
+
+.post:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-5px);
+}
+
+#newpost {
+    display: block;
+    background-color: #FCFCFD;
+    border-radius: 4px;
+    border-width: 0;
+    box-shadow: rgba(45, 35, 66, 0.4) 0 2px 4px,rgba(45, 35, 66, 0.3) 0 7px 13px -3px,#D6D6E7 0 -3px 0 inset;
+    box-sizing: border-box;
+    color: #36395A;
+    transition: box-shadow .15s,transform .15s;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    will-change: box-shadow,transform;
+    margin-top: 10px;
+    padding: 6px 14px;
+    
+}
+
+.edit-textarea {
+    width: 100%;
+    border-radius: 5px; 
+    background-color: #FCFCFD;
+    box-shadow: #D6D6E7 0 5px 10px inset;
+    transform: translateY(2px);
+    border: none;
+    padding: 3px 7px;
+}
+
+#newpost:hover {
+    box-shadow: rgba(45, 35, 66, 0.4) 0 4px 8px, rgba(45, 35, 66, 0.3) 0 7px 13px -3px, #D6D6E7 0 -3px 0 inset;
+    transform: translateY(-2px);
+}
+
+#id_text {
+    width: 100%;
+    border-radius: 5px; 
+    background-color: #FCFCFD;
+    box-shadow: #D6D6E7 0 5px 10px inset;
+    transform: translateY(2px);
+    border: none;
+    padding: 3px 7px;
+}
+
+#post-submit-btn {
+    margin-bottom: 10px;
+}
+
+.user-details {
+    font-weight: 600;
+    
+}
+
+.date_created {
+    opacity: 0.5;
+    font-size: 0.6rem;
+    margin-left: 10px;
+}
+
+.post-content {
+    display: block;
+}
+
+.likes-number {
+    display: block;   
+    justify-content: start;
+}
+
+.likes-btn {
+  cursor:pointer;
+  padding:10px 12px 8px;
+  background: #FCFCFD;
+  border-radius:50%;
+  display:inline-block;
+  margin:0 0 15px;
+  color:#aaa;
+  transition:.2s;
+}
+
+.likes-btn:hover {
+  color:#666;
+}
+
+.likes-btn:before {
+  font-family:fontawesome;
+  content:'\f004';
+  font-style:normal;
+}
+
+.likes-btn.press {
+  animation: size .4s;
+  color:#e23b3b;
+}
+
+@keyframes fade {
+  0% {opacity: 0;}
+  50% {color:#e23b3b;}
+  100% {opacity: 0;}
+}
+
+@keyframes size {
+  0% {padding:10px 12px 8px;}
+  50% {padding:14px 16px 12px;  
+    margin-top:-4px;}
+  100% {padding:10px 12px 8px;}
+}
+
+.pagination {
+  margin-top: 20px;
+  justify-content: center;
+}
+
+.edit-post {
+  outline: none;
+  background: none;
+  border: none;
+  margin-left: 0.3%;
+  opacity: 0.5;
+  text-decoration: underline;
+}
+
+.edit-post:focus {
+  outline: none;
+}
+
+.edit-btn {
+  height: 33px;
+}

@@ -1,0 +1,56 @@
+{% extends "network/layout.html" %}
+{% load static %}
+
+{% block link %}
+        <script src="{% static 'network/index.js' %}"></script>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+        <script src="{% static 'network/posts.js' %}"></script>
+{% endblock %}
+
+{% block body %}
+  {% if user.is_authenticated %}
+  <div id="newpost">
+    <form id ="newpost-form">
+        {% csrf_token %}
+        <h3 id="new-post-head">New post</h3>
+        {{form_post}}
+        <p id="post-message"></p>
+        <input type="submit" id="post-submit-btn" class="button-30" value="post">
+    </form>
+  </div> 
+  {% endif %}
+  <div id="posts">
+    {% for post in posts %}
+        <div class="post">
+            <span class="user-details"><a href="{% url 'profile' name=post.user %}">{{post.user}}</a><span class="date_created">{{post.date_of_creation}}</span></span>
+            {% if post.user == user %}
+              <button class="edit-post">Edit</button>
+            {% endif %}
+            <span class="post-content">{{post.text_content}}</span>
+            <span class="likes-number" data-postid="{{post.id}}"><i class="likes-btn"></i>{{post.likes}}</span>
+        </div>
+    {% endfor %}
+  {% if posts.has_other_pages %}
+    <ul class="pagination">
+    {% if posts.has_previous %}
+      <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a></li>
+    {% else %}
+      <li class="disabled page-item"><span class="page-link">Previous</span></li>
+    {% endif %}
+    {% for i in posts.paginator.page_range %}
+      {% if posts.number == i %}
+        <li class="active page-item"><span class="page-link">{{ i }} <span class="sr-only">(current)</span></span></li>
+      {% else %}
+        <li class="page-item"><a class="page-link" href="?page={{ i }}">{{ i }}</a></li>
+      {% endif %}
+    {% endfor %}
+    {% if posts.has_next %}
+      <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}">Next</a></li>
+    {% else %}
+      <li class="disabled page-item"><span class="page-link">Next</span></li>
+    {% endif %}
+  </ul>
+  {% endif %}
+  </div>
+
+{% endblock %}
