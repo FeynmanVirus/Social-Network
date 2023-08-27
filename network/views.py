@@ -21,6 +21,7 @@ def index(request):
 
     all_posts = Posts.objects.all().order_by('-date_of_creation')
     
+    #paginate
     paginate = Paginator(all_posts, 10)
 
     try:
@@ -30,9 +31,16 @@ def index(request):
     except EmptyPage:
         posts = paginate.page(paginate.num_pages)
 
+    #liked posts
+    user_get = User.objects.get(pk=request.user.id)
+    liked_posts = [post['like_post_id'] for post in user_get.liked_posts.all().values('like_post_id')]
+    
+    print(liked_posts)
+
     return render(request, "network/index.html", {
         "form_post": new_post_form, 
         "posts": posts,
+        "liked_posts": liked_posts
     })
 
 
@@ -170,4 +178,21 @@ def edit_post(request, postid):
     post_likes = Posts.objects.filter(pk=postid).values('likes')
 
     return JsonResponse({'user': request.user.username, "likes": post_likes[0]['likes']}, status=200)
-    
+
+@csrf_exempt
+def like_post(request, postid):
+    if request.method != 'POST':
+        return render(request, "network/error.html") 
+    data = json.loads(request.body)
+    print(data)
+    post = Posts.objects.get(pk=postid)
+    if data['likeStatus'] == 'liked':
+        like = UserLikes(like_user=request.user, like_post=post)
+        post.likes += 1
+        post.save()
+        like.save()
+    else:
+        UserLikes.objects.get(like_user=request.user, like_post=post).delete()
+        post.likes -= 1
+        post.save()
+    return JsonResponse({"user": request.user.username, "likes": post.likes}, status=200)

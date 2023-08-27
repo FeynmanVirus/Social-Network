@@ -27,7 +27,11 @@
               <button class="edit-post">Edit</button>
             {% endif %}
             <span class="post-content">{{post.text_content}}</span>
-            <span class="likes-number" data-postid="{{post.id}}"><i class="likes-btn"></i>{{post.likes}}</span>
+            {% if post.id in liked_posts %}
+            <span class="likes-number" data-postid="{{post.id}}"><i class="likes-btn press"></i><span class="likes-no">{{post.likes}}</span></span>
+            {% else %}
+            <span class="likes-number" data-postid="{{post.id}}"><i class="likes-btn"></i><span class="likes-no">{{post.likes}}</span></span>
+            {% endif %}
         </div>
     {% endfor %}
   {% if posts.has_other_pages %}
