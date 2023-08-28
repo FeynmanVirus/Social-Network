@@ -204,13 +204,14 @@ def like_post(request, postid):
 def comment(request, postid):
     if request.method == 'POST':
         data = json.loads(request.body)
-        post = Posts.objects.get(pk=data['postid'])
+        post = Posts.objects.get(pk=postid)
         comment = Comments(user=request.user, post=post, comment_text=data['comment_text'])
         comment.save()
         return JsonResponse({"id": comment.id, "user": request.user.username, "time": comment.time_of_comment}, status=200)
     #GET
-    comments = Comments.objects.filter(post=postid).order_by('-time_of_comment')
-    
+    post = Posts.objects.get(pk=postid)
+    comments = Comments.objects.filter(post=post).order_by('-time_of_comment')
+    print(comments) 
     #get liked comments
     try:
         user_get = User.objects.get(pk=request.user.id)

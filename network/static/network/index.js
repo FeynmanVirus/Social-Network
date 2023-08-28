@@ -1,3 +1,4 @@
+var postID = 0
 document.addEventListener('DOMContentLoaded', function() {
     // newpost form
     try {
@@ -23,66 +24,74 @@ document.addEventListener('DOMContentLoaded', function() {
         const dialog = document.querySelector('.modal')
         for (let i = 0; i < commentBtn.length; i++) {
             commentBtn[i].addEventListener('click', function() {
+                const postID = commentBtn[i].parentElement.dataset.postid
                 dialog.showModal()
-                showComments(commentBtn[i].parentElement.dataset.postid)
+                document.querySelector('#submit-comment').setAttribute('data-postid', postID) 
+                showComments(postID)
+
             })
+            
         }
     } catch(error) {
     }
 })
 
 function showComments(postID) {
-    // add listener to "Add Comment" button
-    document.querySelector('#submit-comment').addEventListener('click', function() {
-        addComment(postID)
-    })
     // get comments
+    document.querySelector('#add-comment-box').value = '';
+
     fetch(`/comment/${postID}`)
     .then(response => response.json())
     .then(result => {
         console.log(result)
+
+        // comments div
         const commentsDiv = document.querySelector('#comments')
-        for (let i = 0; i < result.length; i++) {
-        const div = document.createElement('div')
-        if (result[1] === null || result[1].length == 0) {
+
+        // empty or no liked comments
+        if (result[1] === null || result[1].length == 0 || result[1] === undefined) {
             result[1] = [0]
         } 
-        if (result[0].length == 0) {
+        console.log(result[0].length)
+        if (result[0] === undefined || result[0].length == 0) {
             commentContent = `<h5>No comments yet. You can be the first.</h5>`
-            div.innerHTML = commentContent
-            commentsDiv.append(div)
+            commentsDiv.innerHTML = commentContent
             return;
         }
-        if (result[1].includes(result[0][i]['id'])) {
-        commentContent = `
-            <span class="user-details"><a href="/profile/${result[0][i]['user']}">${result[0][i]['user']}</a><span class="date_created">${result[0][i]['time']} said</span></span>
-            <span class="post-content">${result[0][i]['comment']}</span>
-            <span class="likes-number" data-commentid="${result[0][i]['id']}"><i class="likes-comment-btn press"></i><span class="likes-no-comment">${result[0][i]['likes']}</span></span>
-            `
-        } else {
+
+        for (let i = 0; i < result[0].length; i++) {
+            const div = document.createElement('div')
+            
+            if (result[1].includes(result[0][i]['id'])) {
             commentContent = `
-            <span class="user-details"><a href="/profile/${result[0][i]['user']}">${result[0][i]['user']}</a><span class="date_created">${result[0][i]['time']} said</span></span>
-            <span class="post-content">${result[0][i]['comment']}</span>
-            <span class="likes-number" data-commentid="${result[0][i]['id']}"><i class="likes-comment-btn"></i><span class="likes-no-comment">${result[0][i]['likes']}</span></span>
-            `
-        }
-        div.innerHTML = commentContent
-        commentsDiv.append(div)
-        commentLikeBtn = document.querySelectorAll('.likes-comment-btn')
-        for (let i = 0; i < commentLikeBtn.length; i++) {
-            commentLikeBtn[i].addEventListener('click', function() {
-            commentLikeBtn[i].classList.toggle('press')
-            likeComment(postID, commentLikeBtn[i])
-        })}
-        
-        }
+                <span class="user-details"><a href="/profile/${result[0][i]['user']}">${result[0][i]['user']}</a><span class="date_created">${result[0][i]['time']} said</span></span>
+                <span class="post-content">${result[0][i]['comment']}</span>
+                <span class="likes-number" data-commentid="${result[0][i]['id']}"><i class="likes-comment-btn press"></i><span class="likes-no-comment">${result[0][i]['likes']}</span></span>
+                `
+            } else {
+                commentContent = `
+                <span class="user-details"><a href="/profile/${result[0][i]['user']}">${result[0][i]['user']}</a><span class="date_created">${result[0][i]['time']} said</span></span>
+                <span class="post-content">${result[0][i]['comment']}</span>
+                <span class="likes-number" data-commentid="${result[0][i]['id']}"><i class="likes-comment-btn"></i><span class="likes-no-comment">${result[0][i]['likes']}</span></span>
+                `
+            }
+            div.innerHTML = commentContent
+            commentsDiv.append(div)
+            commentLikeBtn = document.querySelectorAll('.likes-comment-btn')
+            for (let i = 0; i < commentLikeBtn.length; i++) {
+                commentLikeBtn[i].addEventListener('click', function() {
+                commentLikeBtn[i].classList.toggle('press')
+                likeComment(postID, commentLikeBtn[i])
+            })}
+            
+            }
     })
 }
 
-function addComment(postID) {
+function addComment(event) {
+    btn = event.target
     comment_text = document.querySelector('#add-comment-box').value
-    console.log(comment_text)
-    console.log(postID)
+    postID = btn.dataset.postid
     fetch(`/comment/${postID}`, {
         method: 'POST',
         body: JSON.stringify({
@@ -104,8 +113,10 @@ function addComment(postID) {
         commentsDiv.insertBefore(div, commentsDiv.firstChild)
 
         // remove "No comments yet msg"
+        try{
         document.querySelector('h5').textContent = ''
-
+        } catch (error) {
+        }
         commentLikeBtn = document.querySelector('.likes-comment-btn')
         commentLikeBtn.addEventListener('click', function() {
             commentLikeBtn.classList.toggle('press')
