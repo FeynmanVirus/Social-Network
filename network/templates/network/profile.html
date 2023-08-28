@@ -11,6 +11,13 @@
     <span id="followers"></span>
     <span id="following"></span>
 
+    {% if user_owner %}
+        <form action="/profilechange" method="post">
+            {% csrf_token %}
+            <input type="submit" id="edit-profile-btn" class="button-30" value="Edit Profile">
+        </form>
+    {% endif %}
+
     {% if user.is_authenticated %}
         {% if not user_owner %}
         <form id="follow-form">

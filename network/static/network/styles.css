@@ -294,3 +294,50 @@ body {
 #submit-comment:focus {
   outline: none;
 }
+
+#edit-profile-btn {
+  height: 33px;
+  margin: 10px 0;
+}
+
+#change-username-btn, #change-password-btn {
+  display: block;
+  height: 33px;
+  margin: 20px 0;
+}
+
+.container-edit-profile {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 10px;
+  height: 100vh;
+  margin-top: 50px;
+}
+
+.grid-item {
+  position: relative;
+}
+
+.grid-item::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 100px; /* adjust the position of the line */
+  height: 50%;
+  width: 1px;
+  background-color: grey; /* adjust the color of the line */
+}
+
+.change-username {
+  margin-left: 50px;
+}
+
+.item-a {
+  grid-column-start: 1;
+  grid-column-end: 2;
+}
+
+.item-b {
+  grid-column-start: 2;
+  grid-column-end: 3;
+}

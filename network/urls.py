@@ -15,5 +15,8 @@ urlpatterns = [
     path("editpost/<int:postid>", views.edit_post, name="editpost"),
     path("likepost/<int:postid>", views.like_post, name="likepost"),
     path("comment/<int:postid>", views.comment, name="comment"),
-    path("likecomment/<int:postid>", views.like_comment, name="likecomment")
+    path("likecomment/<int:postid>", views.like_comment, name="likecomment"),
+    path("profilechange", views.profile_change, name="profilechange"),
+    path("changepassword", views.password_change, name="changepassword"),
+    path("changeusername", views.username_change, name="changeusername")
 ]

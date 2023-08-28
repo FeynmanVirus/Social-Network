@@ -1,0 +1,31 @@
+{% extends 'network/layout.html' %}
+
+{% block body %}
+    {% if messages %}
+    {% for message in messages %}
+        <div class="container-fluid p-0">
+        <div class="alert {{ message.tags }} alert-dismissible" role="alert" >
+            
+            {{ message }}
+        </div>
+        </div>
+    {% endfor %}
+    {% endif %}
+    <div class="container-edit-profile">
+        <div class="grid-item change-username item-a">
+            <form action="{% url 'changeusername' %}" method="post">
+                {% csrf_token %}
+                <label for="new-username">New Username: 
+                <input type="text" name="new-username" placeholder="New username here..." id="new-username"></label>
+                <input type="submit" class="button-30" name="change-username-btn" value="Change Username" id="change-username-btn">
+            </form>
+        </div>
+        <div class="change-password item-b">
+            <form action="/changepassword" method="post">
+                {% csrf_token %}
+                {{ pass_form.as_p }}
+                <input type="submit" class="button-30" id="change-password-btn" value="Change Password">
+            </form>
+        </div>
+    </div>
+{% endblock %}

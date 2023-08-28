@@ -11,6 +11,9 @@ from django.db.models import F
 import json
 import random
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.contrib import messages
+from django.contrib.auth import update_session_auth_hash
+from django.contrib.auth.forms import PasswordChangeForm
 
 def index(request):
     # get page no.
@@ -237,3 +240,38 @@ def like_comment(request, postid):
         comment.comment_likes -= 1
         comment.save()
     return JsonResponse({"likes": comment.comment_likes}, status=200)
+
+def profile_change(request):
+    pass_form = PasswordChangeForm(request.user)
+    return render(request, "network/edit_profile.html", {
+        "pass_form": pass_form
+    })
+
+def password_change(request):
+    if request.method != 'POST':
+        return render(request, "network/error.html")
+    if request.method == 'POST':
+        form = PasswordChangeForm(request.user, request.POST)
+        if form.is_valid():
+            user = form.save()
+            update_session_auth_hash(request, user)  # Important!
+            messages.success(request, 'Your password was successfully updated!')
+            return redirect('profilechange')
+        else:
+            messages.error(request, 'Password could not be changed')
+            return redirect('profilechange')
+
+def username_change(request):
+    if request.method != 'POST':
+        return render(request, "network/error.html")
+    try:
+        new_username = request.POST['new-username']
+        print(new_username)
+        user = User.objects.get(pk=request.user.id)
+        user.username = new_username
+        user.save()
+        messages.success(request, "Your username was successfully changed.")
+    except:
+        messages.error(request, "Your username could not be changed.")
+    return redirect('profilechange')
+    
