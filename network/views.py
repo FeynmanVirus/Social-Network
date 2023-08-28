@@ -37,7 +37,6 @@ def index(request):
         user_get = User.objects.get(pk=request.user.id)
         liked_posts = [post['like_post_id'] for post in user_get.liked_posts.all().values('like_post_id')]
         
-        print(liked_posts)
 
         return render(request, "network/index.html", {
             "form_post": new_post_form, 
@@ -108,7 +107,6 @@ def new_post(request):
         
         create_post = Posts(user=request.user, text_content=data['text_content'])
         create_post.save()
-        print(create_post.id)
 
         return JsonResponse({"user": request.user.username, "content": create_post.text_content, "date": create_post.date_of_creation, "id": create_post.id}, status=200)
 
@@ -129,7 +127,6 @@ def show_profile(request, name):
  
     followers = user_get.follower.all().count()
     following = user_get.following.all().count()
-    print('show_profile')
     user_owner = False
     if user_get == request.user:
         user_owner = True 
@@ -179,10 +176,10 @@ def edit_post(request, postid):
     if request.method != 'POST':
         return render(request, "network/error.html")
     data = json.loads(request.body)
-    
+    print(data)
     update_post = Posts.objects.filter(pk=postid, user=request.user).update(text_content=data['edit_content'])
     post_likes = Posts.objects.filter(pk=postid).values('likes')
-
+    print(update_post)
     return JsonResponse({'user': request.user.username, "likes": post_likes[0]['likes']}, status=200)
 
 @csrf_exempt
@@ -190,7 +187,7 @@ def like_post(request, postid):
     if request.method != 'POST':
         return render(request, "network/error.html") 
     data = json.loads(request.body)
-    print(data)
+
     post = Posts.objects.get(pk=postid)
     if data['likeStatus'] == 'liked':
         like = UserLikes(like_user=request.user, like_post=post)
@@ -205,4 +202,37 @@ def like_post(request, postid):
 
 @csrf_exempt
 def comment(request, postid):
-    pass 
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        post = Posts.objects.get(pk=data['postid'])
+        comment = Comments(user=request.user, post=post, comment_text=data['comment_text'])
+        comment.save()
+        return JsonResponse({"id": comment.id, "user": request.user.username, "time": comment.time_of_comment}, status=200)
+    #GET
+    comments = Comments.objects.filter(post=postid).order_by('-time_of_comment')
+    
+    #get liked comments
+    try:
+        user_get = User.objects.get(pk=request.user.id)
+        liked_comments = [comment['comment_liked_id'] for comment in user_get.comment_like_user.all().values('comment_liked_id')]
+    except:
+        liked_comments =  None
+    return JsonResponse([[comment.serialize() for comment in comments], liked_comments], safe=False)
+
+@csrf_exempt
+def like_comment(request, postid):
+    if request.method != 'POST':
+        return render(request, "network.error.html")
+    data = json.loads(request.body)
+
+    comment = Comments.objects.get(pk=data['commentID'])
+    if data['likeStatus'] == 'liked':
+        comment_like = CommentLikes(comment_like_user=request.user, comment_liked=comment)
+        comment.comment_likes += 1
+        comment_like.save()
+        comment.save()
+    else:
+        CommentLikes.objects.get(comment_like_user=request.user, comment_liked=comment).delete()
+        comment.comment_likes -= 1
+        comment.save()
+    return JsonResponse({"likes": comment.comment_likes}, status=200)

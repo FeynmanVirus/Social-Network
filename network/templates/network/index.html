@@ -34,6 +34,22 @@
             {% endif %}
         </div>
     {% endfor %}
+
+    <!-- Modal -->
+    <dialog class="modal">
+        <button id="close-modal" onclick="closeModal()">close modal</button>
+      <form action="">
+        <input type="text" id="add-comment-box" placeholder="Add a comment...">
+        <p id="comment-msg"></p>
+        <input type="button" class="button-30" id="submit-comment" value="Add comment">
+      </form>
+      <hr>
+      <div id="comments">
+
+      </div>
+    </dialog>
+
+<!-- Pagination -->
   {% if posts.has_other_pages %}
     <ul class="pagination">
     {% if posts.has_previous %}

@@ -48,7 +48,29 @@ class Comments(models.Model):
     post = models.ForeignKey("Posts", on_delete=models.CASCADE, related_name="comments")
     comment_text = models.CharField(max_length=1000, default='')
     time_of_comment = models.DateTimeField(auto_now_add=True)
+    comment_likes = models.IntegerField(default=0)
 
     def __str__(self):
         return f"{self.user} commented {self.comment_text} on {self.post} at {self.time_of_comment}"
+
+    def serialize(self):
+        return {
+            "id": self.id,
+            "user": self.user.username,
+            "post": self.post.id,
+            "comment": self.comment_text,
+            "likes": self.comment_likes,
+            "time": self.time_of_comment
+        } 
+
+class CommentLikes(models.Model):
+    comment_like_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="comment_like_user")
+    comment_liked = models.ForeignKey("Comments", on_delete=models.CASCADE, related_name="comment_liked")
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['comment_like_user', 'comment_liked'], name="unique_comment_likes")
+        ]
     
+    def __str__(self):
+        return f"{self.comment_like_user} liked comment: {self.comment_liked}"

@@ -18,8 +18,131 @@ document.addEventListener('DOMContentLoaded', function() {
     } catch (TypeError) {
     }
     //add listener to all comment buttons
-    
+    try {
+        const commentBtn = document.querySelectorAll('.add-comment')
+        const dialog = document.querySelector('.modal')
+        for (let i = 0; i < commentBtn.length; i++) {
+            commentBtn[i].addEventListener('click', function() {
+                dialog.showModal()
+                showComments(commentBtn[i].parentElement.dataset.postid)
+            })
+        }
+    } catch(error) {
+    }
 })
+
+function showComments(postID) {
+    // add listener to "Add Comment" button
+    document.querySelector('#submit-comment').addEventListener('click', function() {
+        addComment(postID)
+    })
+    // get comments
+    fetch(`/comment/${postID}`)
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const commentsDiv = document.querySelector('#comments')
+        for (let i = 0; i < result.length; i++) {
+        const div = document.createElement('div')
+        if (result[1] === null || result[1].length == 0) {
+            result[1] = [0]
+        } 
+        if (result[0].length == 0) {
+            commentContent = `<h5>No comments yet. You can be the first.</h5>`
+            div.innerHTML = commentContent
+            commentsDiv.append(div)
+            return;
+        }
+        if (result[1].includes(result[0][i]['id'])) {
+        commentContent = `
+            <span class="user-details"><a href="/profile/${result[0][i]['user']}">${result[0][i]['user']}</a><span class="date_created">${result[0][i]['time']} said</span></span>
+            <span class="post-content">${result[0][i]['comment']}</span>
+            <span class="likes-number" data-commentid="${result[0][i]['id']}"><i class="likes-comment-btn press"></i><span class="likes-no-comment">${result[0][i]['likes']}</span></span>
+            `
+        } else {
+            commentContent = `
+            <span class="user-details"><a href="/profile/${result[0][i]['user']}">${result[0][i]['user']}</a><span class="date_created">${result[0][i]['time']} said</span></span>
+            <span class="post-content">${result[0][i]['comment']}</span>
+            <span class="likes-number" data-commentid="${result[0][i]['id']}"><i class="likes-comment-btn"></i><span class="likes-no-comment">${result[0][i]['likes']}</span></span>
+            `
+        }
+        div.innerHTML = commentContent
+        commentsDiv.append(div)
+        commentLikeBtn = document.querySelectorAll('.likes-comment-btn')
+        for (let i = 0; i < commentLikeBtn.length; i++) {
+            commentLikeBtn[i].addEventListener('click', function() {
+            commentLikeBtn[i].classList.toggle('press')
+            likeComment(postID, commentLikeBtn[i])
+        })}
+        
+        }
+    })
+}
+
+function addComment(postID) {
+    comment_text = document.querySelector('#add-comment-box').value
+    console.log(comment_text)
+    console.log(postID)
+    fetch(`/comment/${postID}`, {
+        method: 'POST',
+        body: JSON.stringify({
+            comment_text: comment_text,
+            postid: postID,
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result)
+        const commentsDiv = document.querySelector('#comments')
+        const div = document.createElement('div')
+        commentContent = `
+            <span class="user-details"><a href="/profile/${result['user']}">${result['user']}</a><span class="date_created">${result['time']} said</span></span>
+            <span class="post-content">${comment_text}</span>
+            <span class="likes-number" data-commentid="${result['id']}"><i class="likes-comment-btn"></i><span class="likes-no-comment">0</span></span>
+            `
+        div.innerHTML = commentContent
+        commentsDiv.insertBefore(div, commentsDiv.firstChild)
+
+        // remove "No comments yet msg"
+        document.querySelector('h5').textContent = ''
+
+        commentLikeBtn = document.querySelector('.likes-comment-btn')
+        commentLikeBtn.addEventListener('click', function() {
+            commentLikeBtn.classList.toggle('press')
+            likeComment(postID, commentLikeBtn)
+        })
+    })
+}
+
+function likeComment(postID, btn) {
+    commentID = btn.parentElement.dataset.commentid
+    if (btn.classList[1] === 'press') {
+        likeStatus = 'liked'
+    } else {
+        likeStatus = 'unliked'
+    }
+    console.log(likeStatus)
+    fetch(`/likecomment/${postID}`, {
+        method: 'POST',
+        body: JSON.stringify({
+            likeStatus: likeStatus,
+            commentID: commentID
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result['likes'])
+        likesNumbers = document.querySelector(`[data-commentid="${commentID}"] > .likes-no-comment`)
+        console.log(likesNumbers)
+        likesNumbers.innerText = result['likes']
+    })
+}
+
+function closeModal() {
+  const dialog = document.querySelector('.modal')
+  document.querySelector('#comments').innerHTML = ''
+  dialog.close()
+}
 
 function editPost(event) {
     const btn = event.target
@@ -27,7 +150,7 @@ function editPost(event) {
     const orig_divHTML = div.innerHTML
     const postContent = div.getElementsByClassName('post-content')[0].textContent
     const postID = div.getElementsByClassName('likes-number')[0].dataset.postid
-    console.log(orig_divHTML)
+    console.log(postID)
     const divContent = `
     <form id="edit-post-form" action="">
     <textarea class="edit-textarea">${postContent}</textarea>
@@ -71,9 +194,10 @@ function editPostSubmit(postID, edited_content, div) {
               <button class="edit-post">Edit</button>
             
             <span class="post-content">${edited_content}</span>
-            <span class="likes-number" data-postid="13"><i class="likes-btn"></i>${result['likes']}</span>
+            <span class="likes-number" data-postid="${postID}"><i class="likes-btn"></i><span class="likes-no">${result['likes']}</span><button class="add-comment">Comment</button></span>
         `
         div.innerHTML = divHTML;
+        div.querySelector('.edit-post').addEventListener('click', editPost)
     })
 }
 
