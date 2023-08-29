@@ -274,4 +274,17 @@ def username_change(request):
     except:
         messages.error(request, "Your username could not be changed.")
     return redirect('profilechange')
-    
+
+@csrf_exempt
+def show_followers(request):
+    user_get = User.objects.get(pk=request.user.id)
+    followers_users = user_get.follower.all()
+
+    return JsonResponse([follower_user.serialize() for follower_user in followers_users], safe=False)
+
+@csrf_exempt
+def show_following(request):
+    user_get = User.objects.get(pk=request.user.id)
+    following_users = user_get.following.all()
+
+    return JsonResponse([following_user.serialize() for following_user in following_users], safe=False)

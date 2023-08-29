@@ -306,6 +306,18 @@ body {
   margin: 20px 0;
 }
 
+.following-btn {
+  height: 33px;
+  float: right;
+  margin-bottom: 10px;
+}
+
+
+.follows {
+  display: block;
+  margin-top: 50px;
+}
+
 .container-edit-profile {
   display: grid;
   grid-template-columns: 1fr 1fr;

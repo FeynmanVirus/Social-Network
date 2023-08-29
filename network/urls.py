@@ -18,5 +18,7 @@ urlpatterns = [
     path("likecomment/<int:postid>", views.like_comment, name="likecomment"),
     path("profilechange", views.profile_change, name="profilechange"),
     path("changepassword", views.password_change, name="changepassword"),
-    path("changeusername", views.username_change, name="changeusername")
+    path("changeusername", views.username_change, name="changeusername"),
+    path("showfollowers", views.show_followers, name="showfollwers"),
+    path("showfollowing", views.show_following, name="showfollowing")
 ]

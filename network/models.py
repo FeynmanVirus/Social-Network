@@ -31,6 +31,13 @@ class UserFollowData(models.Model):
     def __str__(self):
         return f"{self.follower_user} follows {self.following_user}"
 
+    def serialize(self):
+        return {
+            "id": self.id,
+            "follows": self.following_user.username,
+            "follower": self.follower_user.username,
+        }
+
 class UserLikes(models.Model):
     like_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="liked_posts")
     like_post = models.ForeignKey("Posts", on_delete=models.CASCADE, related_name="liked_users")

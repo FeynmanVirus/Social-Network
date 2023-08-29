@@ -8,9 +8,12 @@
 
 {% block body %}
     <h2 id="profile-username">{{ user_get.username }}</h2>
+    {% if user_owner %} <a href="#" id="follower-link"><span id="followers"></span></a>
+    <a href="#" id="following-link"><span id="following"></span></a>
+    {% else %}
     <span id="followers"></span>
     <span id="following"></span>
-
+    {% endif %}
     {% if user_owner %}
         <form action="/profilechange" method="post">
             {% csrf_token %}
@@ -36,6 +39,15 @@
         </div>
     {% endfor %}
   </div>
+
+    <!-- Modal -->
+    <dialog class="modal">
+        <button id="close-modal" onclick="closeModal()">close</button>
+        <div class="follows">
+        </div>
+    </dialog>
+
+
   <script>
     let followers = "{{followers|safe}}"
     let following = "{{following|safe}}"
